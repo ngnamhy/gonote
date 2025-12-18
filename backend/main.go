@@ -7,6 +7,7 @@ import (
 	"gonote/internal/repository"
 	"gonote/internal/routes"
 	"gonote/internal/service"
+	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -20,7 +21,8 @@ func main() {
 
 	DB, err := db.New()
 	if err != nil {
-		panic(err)
+		log.Println("Cannot connect to db, exitting")
+		return 
 	}
 
 	user_repo := repository.NewUserRepository(DB)

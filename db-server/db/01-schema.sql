@@ -1,50 +1,55 @@
+-- ===============================
+-- Reddit-style schema (Post + Comment)
+-- ===============================
+
+-- 0. UUID extension
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
+-- ===============================
+-- 1. Users
+-- ===============================
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_disabled BOOLEAN DEFAULT FALSE NOT NULL
 );
 
-
+-- ===============================
+-- 2. Posts
+-- ===============================
 CREATE TABLE posts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    body TEXT NOT NULL,
-    view_count INT DEFAULT 0,
+    title TEXT NOT NULL,
+    body TEXT,
+    score INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-
-CREATE TABLE answers (
+-- ===============================
+-- 3. Comments (nested)
+-- ===============================
+CREATE TABLE comments (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     post_id UUID NOT NULL,
     user_id UUID NOT NULL,
+    parent_id UUID,
     body TEXT NOT NULL,
+    score INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES comments(id) ON DELETE CASCADE
 );
 
-
-CREATE TYPE comment_target AS ENUM ('post', 'answer');
-
-CREATE TABLE comments (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL,
-    target_type comment_target NOT NULL,
-    target_id UUID NOT NULL,
-    body TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-
-CREATE TYPE vote_target AS ENUM ('post', 'answer');
+-- ===============================
+-- 4. Votes
+-- ===============================
+CREATE TYPE vote_target AS ENUM ('post', 'comment');
 
 CREATE TABLE votes (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -57,11 +62,17 @@ CREATE TABLE votes (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- ===============================
+-- 5. Tags
+-- ===============================
 CREATE TABLE tags (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(50) UNIQUE NOT NULL
 );
 
+-- ===============================
+-- 6. Post - Tag (N:N)
+-- ===============================
 CREATE TABLE post_tags (
     post_id UUID NOT NULL,
     tag_id UUID NOT NULL,
@@ -69,3 +80,11 @@ CREATE TABLE post_tags (
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
     FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
 );
+
+-- ===============================
+-- 7. Indexes (performance)
+-- ===============================
+CREATE INDEX idx_posts_created_at ON posts(created_at DESC);
+CREATE INDEX idx_comments_post_id ON comments(post_id);
+CREATE INDEX idx_comments_parent_id ON comments(parent_id);
+CREATE INDEX idx_votes_target ON votes(target_type, target_id);

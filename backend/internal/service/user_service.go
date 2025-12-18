@@ -1,6 +1,7 @@
 package service
 
 import (
+	"gonote/internal/dto"
 	"gonote/internal/model"
 	"gonote/internal/repository"
 	"time"
@@ -27,15 +28,41 @@ func (us *UserService) GetByID(id uuid.UUID) (model.User, error) {
 	return us.user_repo.GetByID(id)
 }
 
-func (us *UserService) Create(username, password, email string) (*model.User, error) {
+func (us *UserService) Create(params dto.CreateUserParams) (*model.User, error) {
 	id := uuid.New()
 	createdAt := time.Now()
 	user := &model.User{
 		ID:        id,
-		Username:  username,
-		Password:  password,
-		Email:     email,
+		Username:  *params.Username,
+		Password:  *params.Password,
+		Email:     *params.Email,
+		IsDisabled: false,
 		CreatedAt: createdAt,
 	}
 	return user, us.user_repo.Create(user)
+}
+
+func (us *UserService) Update(id uuid.UUID, params dto.UpdateUserParams) (*model.User, error) {
+	user, err := us.user_repo.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if params.Username != nil {
+		user.Username = *params.Username
+	}
+
+	if params.Password != nil {
+		user.Password = *params.Password
+	}
+
+	if params.Email != nil {
+		user.Email = *params.Email
+	}
+
+	if params.IsDisabled != nil {
+		user.IsDisabled = *params.IsDisabled
+	}
+
+	return &user, us.user_repo.Update(&user)
 }

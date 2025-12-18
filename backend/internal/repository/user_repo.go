@@ -15,10 +15,6 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
-func (r *UserRepository) Create(user *model.User) error {
-	return r.db.Create(user).Error
-}
-
 func (r *UserRepository) GetAllUser() ([]model.User, error) {
 	var users []model.User
 	err := r.db.Find(&users).Error
@@ -37,4 +33,13 @@ func (r *UserRepository) GetByID(id uuid.UUID) (model.User, error) {
 	}
 
 	return user, nil
+}
+
+func (r *UserRepository) Create(user *model.User) error {
+	return r.db.Create(user).Error
+}
+
+func (r *UserRepository) Update(user *model.User) error {
+	err := r.db.Save(user).Error
+	return err
 }
