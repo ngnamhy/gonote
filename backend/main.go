@@ -9,6 +9,7 @@ import (
 	"gonote/internal/service"
 	"log"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -19,21 +20,30 @@ func main() {
 
 	r := gin.Default()
 
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		AllowCredentials: true,
+	}))
+
 	DB, err := db.New()
 	if err != nil {
 		log.Println("Cannot connect to db, exitting")
-		return 
+		return
 	}
 
-	user_repo := repository.NewUserRepository(DB)
+	userRepo := repository.NewUserRepository(DB)
+	userService := service.NewUserService(userRepo)
+	userHandler := handler.NewUserHandler(userService)
+	userRoutes := routes.NewUserRoutes(userHandler)
 
-	user_service := service.NewUserService(user_repo)
+	postRepo := repository.NewPostRepository(DB)
+	postService := service.NewPostService(postRepo)
+	postHandler := handler.NewPostHandler(postService)
+	postRoutes := routes.NewPostRoutes(postHandler)
 
-	user_handler := handler.NewUserHandler(user_service)
-
-	user_routes := routes.NewUserRoutes(user_handler)
-
-	routes.RegisterRoutes(r, user_routes)
+	routes.RegisterRoutes(r, userRoutes, postRoutes)
 
 	r.Run(cfg.ServerAddress)
 }

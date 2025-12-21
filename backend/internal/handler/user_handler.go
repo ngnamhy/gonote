@@ -10,15 +10,15 @@ import (
 )
 
 type UserHandler struct {
-	user_service *service.UserService
+	userService *service.UserService
 }
 
-func NewUserHandler(user_service *service.UserService) *UserHandler {
-	return &UserHandler{user_service: user_service}
+func NewUserHandler(userService *service.UserService) *UserHandler {
+	return &UserHandler{userService: userService}
 }
 
 func (h *UserHandler) GetAllUser(c *gin.Context) {
-	users, err := h.user_service.GetAllUser()
+	users, err := h.userService.GetAllUser()
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -43,7 +43,7 @@ func (h *UserHandler) GetByID(c *gin.Context) {
 
 	id, _ := uuid.Parse(params.ID)
 
-	user, err := h.user_service.GetByID(id)
+	user, err := h.userService.GetByID(id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"message": "user not found"})
 		return
@@ -54,11 +54,13 @@ func (h *UserHandler) GetByID(c *gin.Context) {
 func (h *UserHandler) Create(c *gin.Context) {
 	var params dto.CreateUserParams
 	if err := c.ShouldBindJSON(&params); err != nil {
-		c.JSON(http.StatusBadRequest, err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 
-	user, err := h.user_service.Create(params)
+	user, err := h.userService.Create(params)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err)
 		return
@@ -71,17 +73,17 @@ func (h *UserHandler) Update(c *gin.Context) {
 
 	id, err := uuid.Parse(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	var params dto.UpdateUserParams
 	if err := c.ShouldBindJSON(&params); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid params"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user, err := h.user_service.Update(id, params)
+	user, err := h.userService.Update(id, params)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

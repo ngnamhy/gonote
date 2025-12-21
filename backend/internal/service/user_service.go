@@ -7,43 +7,57 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService struct {
-	user_repo *repository.UserRepository
+	userRepo *repository.UserRepository
 }
 
-func NewUserService(user_repo *repository.UserRepository) *UserService {
+func NewUserService(userRepo *repository.UserRepository) *UserService {
 	return &UserService{
-		user_repo: user_repo,
+		userRepo: userRepo,
 	}
 }
 
 func (us *UserService) GetAllUser() ([]model.User, error) {
-	users, error := us.user_repo.GetAllUser()
-	return users, error
+	users, err := us.userRepo.GetAllUser()
+	return users, err
 }
 
 func (us *UserService) GetByID(id uuid.UUID) (model.User, error) {
-	return us.user_repo.GetByID(id)
+	return us.userRepo.GetByID(id)
+}
+
+func (us *UserService) GetByUsername(username string) (model.User, error) {
+	return us.userRepo.GetByUsername(username)
 }
 
 func (us *UserService) Create(params dto.CreateUserParams) (*model.User, error) {
 	id := uuid.New()
 	createdAt := time.Now()
-	user := &model.User{
-		ID:        id,
-		Username:  *params.Username,
-		Password:  *params.Password,
-		Email:     *params.Email,
-		IsDisabled: false,
-		CreatedAt: createdAt,
+
+	hashed, err := bcrypt.GenerateFromPassword(
+		[]byte(*params.Password),
+		bcrypt.DefaultCost,
+	)
+	if err != nil {
+		return nil, err
 	}
-	return user, us.user_repo.Create(user)
+
+	user := &model.User{
+		ID:         id,
+		Username:   *params.Username,
+		Password:   string(hashed),
+		Email:      *params.Email,
+		IsDisabled: false,
+		CreatedAt:  createdAt,
+	}
+	return user, us.userRepo.Create(user)
 }
 
 func (us *UserService) Update(id uuid.UUID, params dto.UpdateUserParams) (*model.User, error) {
-	user, err := us.user_repo.GetByID(id)
+	user, err := us.userRepo.GetByID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -64,5 +78,5 @@ func (us *UserService) Update(id uuid.UUID, params dto.UpdateUserParams) (*model
 		user.IsDisabled = *params.IsDisabled
 	}
 
-	return &user, us.user_repo.Update(&user)
+	return &user, us.userRepo.Update(&user)
 }
