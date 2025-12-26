@@ -29,7 +29,7 @@ func (us *UserService) GetByID(id uuid.UUID) (model.User, error) {
 	return us.userRepo.GetByID(id)
 }
 
-func (us *UserService) GetByUsername(username string) (model.User, error) {
+func (us *UserService) GetByUsername(username string) (*model.User, error) {
 	return us.userRepo.GetByUsername(username)
 }
 
@@ -67,7 +67,10 @@ func (us *UserService) Update(id uuid.UUID, params dto.UpdateUserParams) (*model
 	}
 
 	if params.Password != nil {
-		user.Password = *params.Password
+		hashed, _ := bcrypt.GenerateFromPassword(
+			[]byte(*params.Password),
+			bcrypt.DefaultCost)
+		user.Password = string(hashed)
 	}
 
 	if params.Email != nil {

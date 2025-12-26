@@ -39,16 +39,16 @@ func (r *UserRepository) GetByID(id uuid.UUID) (model.User, error) {
 	return user, nil
 }
 
-func (r *UserRepository) GetByUsername(username string) (model.User, error) {
+func (r *UserRepository) GetByUsername(username string) (*model.User, error) {
 	var user model.User
 	err := r.db.
 		Where("username = ?", username).
 		First(&user).
 		Error
 	if err != nil {
-		return model.User{}, err
+		return nil, err
 	}
-	return user, nil
+	return &user, nil
 }
 
 func (r *UserRepository) Create(user *model.User) error {

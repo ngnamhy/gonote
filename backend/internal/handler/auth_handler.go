@@ -6,54 +6,33 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthHandler struct {
-	userService service.UserService
+	authService *service.AuthService
 }
 
-func NewAuthHandler(userService service.UserService) *AuthHandler {
-	return &AuthHandler{userService: userService}
+func NewAuthHandler(authService *service.AuthService) *AuthHandler {
+	return &AuthHandler{authService: authService}
 }
 
 func (h *AuthHandler) Login(c *gin.Context) {
 	var params dto.LoginParams
 	if err := c.ShouldBindJSON(&params); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
 		return
 	}
 
-	user, err := h.userService.GetByUsername(params.Username)
+	accessToken, err := h.authService.Login(params)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": "email or password incorrect",
-		})
-		return
-	}
-
-	err = bcrypt.CompareHashAndPassword(
-		[]byte(user.Password),
-		[]byte(params.Password),
-	)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": "email or password incorrect",
-		})
-		return
-	}
-
-	token, err := GenerateJWT(user.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "cannot generate token",
-		})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "wrong username or password"})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"access_token": token,
-	})
+		"message":      "login success",
+		"access_token": accessToken})
+}
+
+func (h *AuthHandler) Logout(c *gin.Context) {
 }

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="aa4ef743-0d68-4c81-a516-e22c928c8407" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/app/auth_module.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/app/module_interface.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/app/post_module.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/app/user_module.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/dto/auth_dto.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/dto/post_dto.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/dto/user_dto.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/routes/auth_routes.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/service/auth_service.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/auth/jwt.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/backend.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/go.imports.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/db/gorm.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/db/gorm.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/dto/create_post_params.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/dto/create_user_params.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/dto/login_params.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/dto/update_post_params.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/dto/update_user_params.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/handler/auth_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/handler/auth_handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/handler/user_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/handler/user_handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/model/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/model/vote.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/vote.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/repository/user_repo.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/repository/user_repo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/routes/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/routes/routes.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/routes/user_routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/routes/user_routes.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/user_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/user_service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../db-server/db/01-schema.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../db-server/db/02-mock.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../db-server/docker-compose.yml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file:///usr/lib/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="3743oqIfRZ2GR18TlRYF2jvAm5U" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;Go Build.go build ./cmd/api.executor&quot;: &quot;Debug&quot;,
+    &quot;Go Build.go build ./cmd/api/.executor&quot;: &quot;Debug&quot;,
+    &quot;Go Build.go build ./cmd/api/main.go.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.go build gonote.executor&quot;: &quot;Debug&quot;,
+    &quot;Go Build.go build gonote/cmd/api.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.GoLinterPluginOnboardingV2&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.GoLinterPluginStorageMigration&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/ngnamhy/code/gonote/backend/cmd/api&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/cmd/api" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/internal" />
+      <recent name="$PROJECT_DIR$/internal/app" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Go Build.go build gonote/cmd/api">
+    <configuration name="go build ./cmd/api/main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+      <module name="backend" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <kind value="PACKAGE" />
+      <package value="./cmd/api" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build gonote/cmd/api" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="backend" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="gonote/cmd/api" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/cmd/api/main.go" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Go Build.go build ./cmd/api/main.go" />
+      <item itemvalue="Go Build.go build gonote/cmd/api" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build gonote/cmd/api" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-gosdk-72a9cf600ed8-448e06e64ec5-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-253.28294.337" />
+        <option value="bundled-js-predefined-d6986cc7102b-c7e53b3be11b-JavaScript-GO-253.28294.337" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="aa4ef743-0d68-4c81-a516-e22c928c8407" name="Changes" comment="" />
+      <created>1766148693652</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1766148693652</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/backend$go_build_gonote.out" NAME="go build gonote Coverage Results" MODIFIED="1766309165948" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>

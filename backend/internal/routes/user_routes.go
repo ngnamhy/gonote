@@ -7,19 +7,19 @@ import (
 )
 
 type UserRoutes struct {
-	user_handler *handler.UserHandler
+	userHandler *handler.UserHandler
 }
 
-func NewUserRoutes(user_handler *handler.UserHandler) *UserRoutes {
+func NewUserRoutes(userHandler *handler.UserHandler) *UserRoutes {
 	return &UserRoutes{
-		user_handler: user_handler,
+		userHandler: userHandler,
 	}
 }
 
 func (ur *UserRoutes) Register(r *gin.RouterGroup) {
 	users := r.Group("/users")
 
-	h := ur.user_handler
+	h := ur.userHandler
 	{
 		users.GET("", h.GetAllUser)
 		users.GET("/:id", h.GetByID)

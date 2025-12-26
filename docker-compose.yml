@@ -11,7 +11,20 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql
-      - ./db:/docker-entrypoint-initdb.d
+      # - ./db:/docker-entrypoint-initdb.d
+
+
+  backend:
+    build: ./backend
+    container_name: gonote-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    env_file:
+      - ./backend/.env
 
 volumes:
   pgdata:
+

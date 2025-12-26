@@ -60,6 +60,13 @@ func (h *UserHandler) Create(c *gin.Context) {
 		return
 	}
 
+	if *params.Password != *params.ConfirmPassword {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "password not match",
+		})
+		return
+	}
+
 	user, err := h.userService.Create(params)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err)

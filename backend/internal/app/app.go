@@ -1,0 +1,67 @@
+package app
+
+import (
+	"gonote/internal/config"
+	"gonote/internal/model"
+	"gonote/internal/routes"
+	"log"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+)
+
+type AppContext struct {
+	DB *gorm.DB
+}
+
+func NewAppContext(DB *gorm.DB) *AppContext {
+	return &AppContext{
+		DB: DB,
+	}
+}
+
+type Application struct {
+	context *AppContext
+	config  *config.Config
+	router  *gin.Engine
+}
+
+func NewApplication(config *config.Config, appContext *AppContext) *Application {
+	r := gin.Default()
+
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		AllowCredentials: true,
+	}))
+
+	if err := appContext.DB.AutoMigrate(
+		&model.User{},
+		&model.Tag{},
+		&model.Post{},
+		&model.PostTag{},
+		&model.Comment{},
+		&model.Vote{},
+	); err != nil {
+		log.Panic(err)
+	}
+
+	modules := []Module{
+		NewUserModule(appContext),
+		NewPostModule(appContext),
+		NewAuthModule(appContext),
+	}
+
+	routes.RegisterRoutes(r, GetRoutesFromModules(modules)...)
+
+	return &Application{
+		config: config,
+		router: r,
+	}
+}
+
+func (app *Application) Run() error {
+	return app.router.Run(app.config.ServerAddress)
+}
