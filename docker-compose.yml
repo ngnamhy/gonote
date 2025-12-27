@@ -2,7 +2,6 @@ services:
   postgres:
     image: postgres:18
     container_name: gonote-postgres
-    restart: unless-stopped
     environment:
       POSTGRES_DB: gonote
       POSTGRES_USER: admin
@@ -11,20 +10,57 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql
-      # - ./db:/docker-entrypoint-initdb.d
-
 
   backend:
     build: ./backend
     container_name: gonote-backend
-    restart: unless-stopped
     ports:
       - "8080:8080"
     depends_on:
       - postgres
     env_file:
       - ./backend/.env
+    volumes:
+      - ./logs:/app/logs:z
+
+  alloy: 
+    build: ./alloy
+    container_name: gnote-alloy
+    ports: 
+      - "12345:12345"
+    volumes: 
+      - ./logs:/app/logs:z
+      - alloy-data:/var/lib/alloy/data:z
+    depends_on:
+      - loki
+
+  loki:
+    image: grafana/loki:latest
+    container_name: gonote-loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki-data:/loki
+      - ./loki/config.yaml:/etc/loki/config.yaml
+
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: gonote-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - loki
 
 volumes:
   pgdata:
-
+  backend-logs:
+  loki-data:
+  grafana-data:
+  alloy-data:

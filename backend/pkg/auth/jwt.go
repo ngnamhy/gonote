@@ -2,6 +2,7 @@ package auth
 
 import (
 	"gonote/internal/model"
+	"log"
 	"os"
 	"time"
 
@@ -43,5 +44,6 @@ func (jwtService *JWTService) GenAccessToken(user *model.User) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	log.Print(string(jwtSecret))
 	return token.SignedString(jwtSecret)
 }

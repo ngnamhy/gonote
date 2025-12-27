@@ -13,6 +13,7 @@ type DB struct {
 type Config struct {
 	ServerAddress string
 	JWTSecret     string
+	LogDir        string
 	DB            DB
 }
 
@@ -20,6 +21,7 @@ func NewConfig() *Config {
 	return &Config{
 		ServerAddress: os.Getenv("SERVER_ADDRESS"),
 		JWTSecret:     os.Getenv("JWT_SECRET"),
+		LogDir:        os.Getenv("LOGDIR"),
 		DB: DB{
 			Host:     os.Getenv("DB_HOST"),
 			User:     os.Getenv("DB_USER"),

@@ -48,7 +48,7 @@ func (h *UserHandler) GetByID(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "user not found"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": user})
+	c.JSON(http.StatusOK, user)
 }
 
 func (h *UserHandler) Create(c *gin.Context) {
