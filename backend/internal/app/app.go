@@ -28,7 +28,7 @@ type Application struct {
 }
 
 func NewApplication(config *config.Config, appContext *AppContext) *Application {
-	r := gin.Default()
+	r := gin.New()
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173"},

@@ -5,7 +5,10 @@ import (
 	"github.com/rs/zerolog"
 )
 
-var Logger *zerolog.Logger
+var (
+	AppLogger  *zerolog.Logger // Log chung của ứng dụng
+	HTTPLogger *zerolog.Logger // Log riêng cho HTTP request
+)
 
 type LoggerConfig struct {
 	Level      string
@@ -16,8 +19,9 @@ type LoggerConfig struct {
 	Compress   bool
 }
 
-func InitLogger(config LoggerConfig) {
-	Logger = NewLogger(config)
+func InitLoggers(appConfig, httpConfig LoggerConfig) {
+	AppLogger = NewLogger(appConfig)
+	HTTPLogger = NewLogger(httpConfig)
 }
 
 func NewLogger(config LoggerConfig) *zerolog.Logger {
@@ -35,7 +39,7 @@ func NewLogger(config LoggerConfig) *zerolog.Logger {
 		Compress:   config.Compress,
 	}
 
-	logger := zerolog.New(writer).With().Timestamp().Logger()
+	logger := zerolog.New(writer).With().Caller().Timestamp().Logger()
 
 	return &logger
 }
