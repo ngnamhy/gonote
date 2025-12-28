@@ -10,27 +10,35 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U admin -d gonote'"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
   backend:
     build: ./backend
     container_name: gonote-backend
     ports:
       - "8080:8080"
-    depends_on:
-      - postgres
     env_file:
       - ./backend/.env
     volumes:
-      - ./logs:/app/logs:z
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   alloy: 
-    build: ./alloy
-    container_name: gnote-alloy
+    image: grafana/alloy:latest
+    container_name: gonote-alloy
     ports: 
       - "12345:12345"
     volumes: 
-      - ./logs:/app/logs:z
-      - alloy-data:/var/lib/alloy/data:z
+      - ./logs:/app/logs
+      - ./alloy/config.alloy:/etc/alloy/config.alloy
+      - alloy-data:/var/lib/alloy/data
+    command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
     depends_on:
       - loki
 
@@ -42,6 +50,8 @@ services:
     volumes:
       - loki-data:/loki
       - ./loki/config.yaml:/etc/loki/config.yaml
+    command: 
+      -config.file=/etc/loki/config.yaml
 
 
   grafana:
@@ -56,6 +66,7 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
     depends_on:
+      - alloy
       - loki
 
 volumes:
