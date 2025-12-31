@@ -18,17 +18,17 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <router-link to="/" class="nav-link" active-class="active">
+              <router-link to="/admin" class="nav-link" active-class="active">
                 <i class="bi bi-house-door"></i> Dashboard
               </router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/users" class="nav-link" active-class="active">
+              <router-link to="/admin/users" class="nav-link" active-class="active">
                 <i class="bi bi-people"></i> Users
               </router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/posts" class="nav-link" active-class="active">
+              <router-link to="/admin/posts" class="nav-link" active-class="active">
                 <i class="bi bi-file-post"></i> Posts
               </router-link>
             </li>
@@ -37,7 +37,7 @@
           <!-- Phần bên phải: Đăng xuất -->
           <div class="d-flex">
             <button @click="logout" class="btn btn-outline-danger">
-              <i class="bi bi-box-arrow-right"></i> Đăng xuất
+              <i class="bi bi-box-arrow-right"></i> Logout
             </button>
           </div>
         </div>
@@ -53,12 +53,13 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { removeToken } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const authStore = useAuthStore()           
 
 function logout() {
-  removeToken()
+  authStore.logout()
   router.push('/login')
 }
 </script>

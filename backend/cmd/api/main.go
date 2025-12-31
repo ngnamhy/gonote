@@ -4,6 +4,7 @@ import (
 	"gonote/internal/app"
 	"gonote/internal/config"
 	"gonote/internal/db"
+	"gonote/pkg/cache"
 	mylog "gonote/pkg/log"
 	"path/filepath"
 )
@@ -34,12 +35,14 @@ func main() {
 	)
 
 	DB, err := db.New(&cfg.DB)
+	redisClient := config.NewRedisClient(cfg.RedisConfig)
+	redisCache := cache.NewRedisCache(redisClient)
 
 	if err != nil {
 		mylog.AppLogger.Fatal().Msg("Error connecting to database")
 	}
 
-	appContext := app.NewAppContext(DB)
+	appContext := app.NewAppContext(DB, redisCache)
 
 	a := app.NewApplication(cfg, appContext)
 

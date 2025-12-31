@@ -1,37 +1,46 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getToken } from '@/stores/auth'
 
-import LoginView from '@/views/LoginView.vue'
-import DashboardView from '@/views/DashboardView.vue'
-import UserList from '@/views/users/UserList.vue'
-import PostList from '@/views/posts/PostList.vue'
+
+import AdminLayout from '@/components/AdminLayout.vue'
+import DefaultLayout from '@/components/DefaultLayout.vue'
+
+
+import AdminDashboard from '@/views/admin/Dashboard.vue'
+import AdminUsers from '@/views/admin/users/Users.vue'
+import AdminPosts from '@/views/admin/posts/Posts.vue'
+
+import Home from '@/views/Home.vue'
 
 const routes = [
-  { path: '/login', name: 'Login', component: LoginView },
+  {
+    path: '/admin',
+    component: AdminLayout,           
+    children: [
+      { path: '', name: 'admin-dashboard', component: AdminDashboard },
+      { path: 'users', name: 'admin-users', component: AdminUsers },
+      { path: 'posts', name: 'admin-posts', component: AdminPosts },
+    ],
+    meta: { requiresAuth: true, isAdmin: true } 
+  },
+
   {
     path: '/',
-    component: () => import('@/components/Layout.vue'),
-    meta: { requiresAuth: true },
+    component: DefaultLayout,         
     children: [
-      { path: '', name: 'Dashboard', component: DashboardView },
-      { path: 'users', name: 'Users', component: UserList },
-      { path: 'posts', name: 'Posts', component: PostList },
+      { path: '', name: 'home', component: Home },
+      // { path: 'note/:id', name: 'note-detail', component: NoteDetail },
+      // { path: 'profile', name: 'user-profile', component: UserProfile },
+      // tất cả route user khác
     ]
-  }
+  },
+
+  { path: '/login', component: () => import('@/views/Login.vue'), meta: { guest: true } },
+  { path: '/register', component: () => import('@/views/Register.vue') },
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes
-})
-
-// Bảo vệ route
-router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !getToken()) {
-    next('/login')
-  } else {
-    next()
-  }
 })
 
 export default router

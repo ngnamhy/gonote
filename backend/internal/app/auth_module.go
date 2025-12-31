@@ -14,8 +14,8 @@ type AuthModule struct {
 
 func NewAuthModule(ctx *AppContext) *AuthModule {
 	userRepo := repository.NewUserRepository(ctx.DB)
-	jwtService := auth.NewJWTService()
-	authService := service.NewAuthService(userRepo, jwtService)
+	jwtService := auth.NewJWTService(ctx.redisCache)
+	authService := service.NewAuthService(userRepo, jwtService, ctx.redisCache)
 	authHandler := handler.NewAuthHandler(authService)
 	authRoutes := routes.NewAuthRoutes(authHandler)
 	return &AuthModule{authRoutes: authRoutes}

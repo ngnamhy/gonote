@@ -4,6 +4,7 @@ import (
 	"gonote/internal/config"
 	"gonote/internal/model"
 	"gonote/internal/routes"
+	"gonote/pkg/cache"
 	"log"
 
 	"github.com/gin-contrib/cors"
@@ -12,12 +13,14 @@ import (
 )
 
 type AppContext struct {
-	DB *gorm.DB
+	DB         *gorm.DB
+	redisCache *cache.RedisCache
 }
 
-func NewAppContext(DB *gorm.DB) *AppContext {
+func NewAppContext(DB *gorm.DB, rdb *cache.RedisCache) *AppContext {
 	return &AppContext{
-		DB: DB,
+		DB:         DB,
+		redisCache: rdb,
 	}
 }
 

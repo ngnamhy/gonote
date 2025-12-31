@@ -23,15 +23,18 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := h.authService.Login(params)
+	accessToken, refreshToken, user, err := h.authService.Login(params)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "wrong username or password"})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message":      "login success",
-		"access_token": accessToken})
+		"message":       "login success",
+		"access_token":  accessToken,
+		"refresh_token": refreshToken,
+		"user":          user,
+	})
 }
 
 func (h *AuthHandler) Logout(c *gin.Context) {
