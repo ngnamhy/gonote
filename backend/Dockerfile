@@ -7,7 +7,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -gcflags="all=-N -l" -o app ./cmd/api
 
 FROM golang:1.25-alpine
 
-RUN go install github.com/go-delve/delve/cmd/dlv@v1.23.1
+RUN go install github.com/go-delve/delve/cmd/dlv@latest
 
 WORKDIR /app
 COPY --from=builder /app/app .

@@ -9,6 +9,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type CustomResponseWriter struct {
+	gin.ResponseWriter
+	body *bytes.Buffer
+}
+
+func (w *CustomResponseWriter) Write(data []byte) (n int, err error) {
+	w.body.Write(data)
+	return w.ResponseWriter.Write(data)
+}
+
 const maxBodySize = 10 * 1024
 
 func LoggerMiddleware() gin.HandlerFunc {
@@ -28,6 +38,13 @@ func LoggerMiddleware() gin.HandlerFunc {
 		}
 		c.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 
+		customWriter := &CustomResponseWriter{
+			ResponseWriter: c.Writer,
+			body:           bytes.NewBufferString(""),
+		}
+
+		c.Writer = customWriter
+
 		c.Next()
 
 		latency := time.Since(start)
@@ -40,6 +57,17 @@ func LoggerMiddleware() gin.HandlerFunc {
 		}
 
 		event := mylog.HTTPLogger.Info()
+
+		responseBody := customWriter.body.Bytes()
+		var responseBodyStr string
+		if len(responseBody) == 0 {
+			responseBodyStr = "[empty response]"
+		} else if len(responseBody) > maxBodySize {
+			responseBodyStr = "[response too large to log]"
+		} else {
+			responseBodyStr = string(responseBody)
+		}
+
 		if len(c.Errors) > 0 || statusCode >= 500 {
 			event = mylog.HTTPLogger.Error()
 		} else if statusCode >= 400 {
@@ -52,13 +80,14 @@ func LoggerMiddleware() gin.HandlerFunc {
 			Int("status", statusCode).
 			Str("ip", clientIP).
 			Str("user_agent", userAgent).
-			Dur("latency", latency)
+			Dur("latency", latency).
+			Str("response_body", responseBodyStr)
 
 		if len(bodyBytes) > 0 && string(bodyBytes) != "[body too large to log]" {
 			bodyStr := string(bodyBytes)
-			logEvent = logEvent.Str("body", bodyStr)
+			logEvent = logEvent.Str("request_body", bodyStr)
 		} else if len(bodyBytes) > 0 {
-			logEvent = logEvent.Str("body", string(bodyBytes))
+			logEvent = logEvent.Str("request_body", string(bodyBytes))
 		}
 
 		logEvent.Msg("HTTP request")

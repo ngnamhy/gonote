@@ -79,7 +79,6 @@ services:
 
 volumes:
   pgdata:
-  backend-logs:
   loki-data:
   grafana-data:
   alloy-data:
