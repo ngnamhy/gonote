@@ -1,3 +1,26 @@
+prometheus.exporter.unix "host" {
+}
+
+prometheus.scrape "host" {
+  targets    = prometheus.exporter.unix.host.targets
+  forward_to = [prometheus.remote_write.prom.receiver]
+}
+
+prometheus.exporter.cadvisor "containers" {
+  docker_host = "unix:///var/run/docker.sock"
+}
+
+prometheus.scrape "containers" {
+  targets    = prometheus.exporter.cadvisor.containers.targets
+  forward_to = [prometheus.remote_write.prom.receiver]
+}
+
+prometheus.remote_write "prom" {
+  endpoint {
+    url = "http://prometheus:9090/api/v1/write"
+  }
+}
+
 local.file_match "local_files" {
   path_targets = [{"__path__" = "/app/logs/*.log"}]
 }
@@ -12,3 +35,4 @@ loki.write "grafana_loki" {
     url = "http://loki:3100/loki/api/v1/push"
   }
 }
+

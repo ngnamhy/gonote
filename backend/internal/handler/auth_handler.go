@@ -29,11 +29,20 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
+	c.SetCookie(
+		"refresh_token",
+		*refreshToken,
+		7*24*60*60,
+		"/",
+		"",
+		false,
+		true,
+	)
+
 	c.JSON(http.StatusOK, gin.H{
-		"message":       "login success",
-		"access_token":  accessToken,
-		"refresh_token": refreshToken,
-		"user":          user,
+		"message":      "login success",
+		"access_token": accessToken,
+		"user":         user,
 	})
 }
 

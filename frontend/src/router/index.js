@@ -28,9 +28,6 @@ const routes = [
     component: DefaultLayout,         
     children: [
       { path: '', name: 'home', component: Home },
-      // { path: 'note/:id', name: 'note-detail', component: NoteDetail },
-      // { path: 'profile', name: 'user-profile', component: UserProfile },
-      // tất cả route user khác
     ]
   },
 

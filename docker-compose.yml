@@ -57,6 +57,10 @@ services:
       - ./monitor/logs:/app/logs
       - ./monitor/alloy/config.alloy:/etc/alloy/config.alloy
       - alloy-data:/var/lib/alloy/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /:/host:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
     command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
     depends_on:
       - loki
@@ -71,6 +75,15 @@ services:
       - ./monitor/loki/config.yaml:/etc/loki/config.yaml
     command: 
       -config.file=/etc/loki/config.yaml
+
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - --web.enable-remote-write-receiver
+      - --enable-feature=native-histograms
+      - --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090/tcp
 
 
   grafana:
@@ -97,3 +110,4 @@ volumes:
   grafana-data:
   alloy-data:
   redis-data:
+  prometheus-data:

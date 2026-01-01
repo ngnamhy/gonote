@@ -9,7 +9,7 @@ export const useAuthStore = defineStore('auth', {
 
   getters: {
     isLoggedIn: state => !!state.token,
-    isAdmin: state => state.user.role === 'admin', // giả sử backend trả role
+    isAdmin: state => state.user.role === 'admin', 
   },
 
   actions: {
@@ -47,7 +47,7 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       this.token = null
       this.user = null
-      localStorage.removeItem('token')
+      localStorage.removeItem('access_token')
     },
 
     loadFromStorage() {

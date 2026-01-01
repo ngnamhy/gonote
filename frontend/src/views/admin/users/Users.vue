@@ -42,7 +42,7 @@ async function saveUser() {
 }
 
 async function deleteUser(id) {
-  if (confirm('Xóa thật không?')) {
+  if (confirm('delete user ' + id + ' ?')) {
     await api.delete(`/users/${id}`)
     loadUsers()
   }
@@ -79,7 +79,7 @@ onMounted(loadUsers)
         <tr v-for="user in users" :key="user.id">
           <td>{{ user.id }}</td>
           <td>{{ user.email }}</td>
-          <td>{{ user.name }}</td>
+          <td>{{ user.username }}</td>
           <td>
             <button @click="editUser(user)" class="btn btn-warning btn-sm">Modify</button>
             <button @click="deleteUser(user.id)" class="btn btn-danger btn-sm ms-2">Remove</button>

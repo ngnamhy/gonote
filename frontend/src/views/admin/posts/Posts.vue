@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h2>Quản lý Bài viết</h2>
-    <p>Đang phát triển...</p>
+    <h2>Posts Management</h2>
+    <p>Will be available soon...</p>
   </div>
 </template>
 

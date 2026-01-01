@@ -35,12 +35,11 @@ func main() {
 	)
 
 	DB, err := db.New(&cfg.DB)
-	redisClient := config.NewRedisClient(cfg.RedisConfig)
-	redisCache := cache.NewRedisCache(redisClient)
-
 	if err != nil {
 		mylog.AppLogger.Fatal().Msg("Error connecting to database")
 	}
+	redisClient := config.NewRedisClient(cfg.RedisConfig)
+	redisCache := cache.NewRedisCache(redisClient)
 
 	appContext := app.NewAppContext(DB, redisCache)
 

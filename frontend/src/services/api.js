@@ -5,6 +5,7 @@ import { useAuthStore } from '@/stores/auth'
 
 const api = axios.create({
   baseURL: 'http://localhost:8080/api/v1', 
+  withCredentials: true, 
 })
 
 api.interceptors.request.use(config => {
@@ -22,8 +23,8 @@ api.interceptors.response.use(
   error => {
     if (error.response?.status === 401) {
       const authStore = useAuthStore()
-      authStore.logout() // xóa token, user
-      window.location.href = '/login' // hoặc dùng router.push nếu inject được
+      authStore.logout() 
+      window.location.href = '/login'
     }
     return Promise.reject(error)
   }

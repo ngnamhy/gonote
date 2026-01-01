@@ -3,6 +3,7 @@ package auth
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"errors"
 	"gonote/internal/model"
 	"gonote/pkg/cache"
 	"log"
@@ -55,6 +56,22 @@ func (jwtService *JWTService) GenAccessToken(user *model.User) (string, error) {
 	return token.SignedString(jwtSecret)
 }
 
+func (jwtService *JWTService) ParseAccessToken(tokenString string) (*jwt.Token, jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
+		return jwtSecret, nil
+	})
+
+	if err != nil || !token.Valid {
+		return nil, nil, errors.New("invalid token")
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, nil, errors.New("invalid token")
+	}
+	return token, claims, nil
+}
+
 type RefreshToken struct {
 	Token     string    `json:"token"`
 	UserID    string    `json:"user_id"`
@@ -78,6 +95,6 @@ func (jwtService *JWTService) GenRefreshToken(user *model.User) (RefreshToken, e
 }
 
 func (jwtService *JWTService) StoreRefreshToken(token RefreshToken) error {
-	err := jwtService.redisCache.Set(token.Token, token, AccessTokenTTL)
+	err := jwtService.redisCache.Set("refresh_token_"+token.Token, token, AccessTokenTTL)
 	return err
 }

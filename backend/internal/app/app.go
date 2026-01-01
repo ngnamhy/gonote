@@ -4,6 +4,7 @@ import (
 	"gonote/internal/config"
 	"gonote/internal/model"
 	"gonote/internal/routes"
+	"gonote/pkg/auth"
 	"gonote/pkg/cache"
 	"log"
 
@@ -57,7 +58,8 @@ func NewApplication(config *config.Config, appContext *AppContext) *Application 
 		NewAuthModule(appContext),
 	}
 
-	routes.RegisterRoutes(r, GetRoutesFromModules(modules)...)
+	jwtService := auth.NewJWTService(appContext.redisCache)
+	routes.RegisterRoutes(r, jwtService, GetRoutesFromModules(modules)...)
 
 	return &Application{
 		config: config,
