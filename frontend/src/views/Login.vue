@@ -1,70 +1,140 @@
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import InputText from 'primevue/inputtext'
+import Password from 'primevue/password'
+import Button from 'primevue/button'
+import api from '@/services/api'
 import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const authStore = useAuthStore()
-
-const form = ref({
-  email: '',
-  password: '',
-})
-
 const loading = ref(false)
-const error = ref('')
+const form = ref({
+  username: '',
+  password: ''
+})
+const errors = ref({})
 
-async function handleLogin() {
+async function handleSubmit() {
   loading.value = true
-  error.value = ''
+  errors.value = {}
 
   try {
-    await authStore.login(form.value)
-
-    // await authStore.fetchUser()
-    console.log(form.value)
+    await authStore.login({
+      username: form.value.username,
+      password: form.value.password
+    })
 
     if (authStore.isAdmin) {
       router.push('/admin')
     } else {
-      router.push('/') 
+      router.push('/')
     }
 
   } catch (err) {
-    error.value = err.response?.data?.message || 'Wrong username or password'
+    console.log(err)
+    errors.value.message =
+      err.response?.data?.message || 'Wrong username or password'
   } finally {
     loading.value = false
   }
 }
+
+function socialLogin(provider) {
+  console.log('Login with', provider)
+  // Xử lý OAuth ở đây
+}
 </script>
+
+<style scoped>
+.gradient-panel {
+  background: linear-gradient(135deg, #141204 0%, #262A10 40%, #54442B 100%);
+  box-shadow: 0 20px 60px rgba(20, 18, 4, 0.6);
+}
+</style>
+
 <template>
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card shadow">
-          <div class="card-body">
-            <h3 class="text-center mb-4">Sign in Gonote</h3>
+  <div class="min-h-screen flex p-8 gap-8" style="background-color: #141204">
+    <!-- Phần trái: Gradient background -->
+    <div class="hidden lg:flex lg:w-1/2 flex-col justify-between gradient-panel text-white p-12 rounded-[2rem]">
+      <div class="flex items-center gap-3">
+        <i class="pi pi-sparkles text-4xl"></i>
+        <span class="text-2xl font-bold">gono.</span>
+      </div>
 
-            <form @submit.prevent="handleLogin">
-              <div class="mb-3">
-                <label>Username</label>
-                <input v-model="form.username" class="form-control" required />
-              </div>
-              <div class="mb-3">
-                <label>Password</label>
-                <input v-model="form.password" type="password" class="form-control" required />
-              </div>
+      <div class="max-w-md">
+        <p class="text-sm mb-2 opacity-90">You can easily</p>
+        <h1 class="text-4xl font-semibold leading-tight">
+          Get access your personal hub for clarity and productivity
+        </h1>
+      </div>
 
-              <button type="submit" class="btn btn-primary w-100" :disabled="loading">
-                {{ loading ? 'Loading...' : 'Sign in' }}
-              </button>
+      <div></div>
+    </div>
 
-              <p class="text-danger mt-3 text-center" v-if="error">{{ error }}</p>
-            </form>
-          </div>
+    <!-- Phần phải: Form -->
+    <div class="flex-1 flex items-center justify-center p-4">
+      <div class="w-full max-w-md p-10 rounded-3xl">
+        <div class="text-center mb-8">
+          <i class="pi pi-sparkles text-5xl mb-4" style="color: #E8985E"></i>
+          <h2 class="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+          <p class="text-sm">
+            Access your tasks, notes, and projects anytime, anywhere - and keep everything flowing in one place.
+          </p>
         </div>
+
+        <form @submit.prevent="handleSubmit">
+          <!-- Email -->
+          <div class="mb-5">
+            <label for="username" class="block font-semibold mb-2 text-sm">Username</label>
+            <InputText id="username" v-model="form.username" class="w-full" placeholder="yourusername"
+              :invalid="!!errors.username" />
+            <small v-if="errors.username" class="text-red-500 text-sm mt-2">{{ errors.username }}</small>
+          </div>
+
+          <!-- Password -->
+          <div class="mb-5">
+            <label for="password" class="block font-semibold mb-2 text-sm">Password</label>
+            <Password id="password" v-model="form.password" class="w-full" toggleMask :feedback="false"
+              placeholder="••••••••" :invalid="!!errors.password" />
+            <small v-if="errors.password" class="text-red-500 text-sm mt-2">{{ errors.password }}</small>
+          </div>
+
+          <Button type="submit" label="Get Started" class="w-full py-3.5 text-lg font-semibold rounded-xl mt-2" style="color: var(--color-text-primary); 
+            background-color: var(--color-bg-tertiary); 
+            border: 0px;" onmouseenter="this.style.backgroundColor='#54442B'"
+            onmouseleave="this.style.backgroundColor='#262A10'" :loading="loading" />
+
+          <small v-if="errors.message" class="text-red-500 block text-center mt-2">
+            {{ errors.message }}
+          </small>
+
+          <!-- Divider -->
+          <div class="flex items-center my-7 gap-4">
+            <div class="flex-1 h-px" style="background-color: #54442B"></div>
+            <span class="text-sm" style="color: #A9714B">or continue with</span>
+            <div class="flex-1 h-px" style="background-color: #54442B"></div>
+          </div>
+
+          <!-- Social buttons -->
+          <div class="grid grid-cols-1 gap-3 mb-6">
+            <button type="button" class="p-3 rounded-xl transition-colors flex items-center justify-center"
+              style="border: 0px; background-color: #262A10"
+              onmouseenter="this.style.backgroundColor='#54442B'" onmouseleave="this.style.backgroundColor='#262A10'"
+              @click="socialLogin('google')">
+              <img src="https://www.google.com/favicon.ico" alt="Google" class="h-6 w-auto" />
+            </button>
+          </div>
+
+          <!-- Sign up link -->
+          <p class="text-center text-sm" style="color: #A9714B">
+            Don't have an account?
+            <router-link to="/register" class="font-semibold hover:underline" style="color: #E8985E">Sign
+              up</router-link>
+          </p>
+        </form>
       </div>
     </div>
   </div>
 </template>
-

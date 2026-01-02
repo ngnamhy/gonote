@@ -34,15 +34,10 @@ export const useAuthStore = defineStore('auth', {
     async login(credentials) {
       const response = await api.post('/auth/login', credentials)
       const { access_token, user } = response.data
-      console.log("USER: " + user)
       this.setAccessToken(access_token)
       this.setUser(user)
     },
 
-    async fetchUser() {
-      const response = await api.get('/me') 
-      this.setUser(response.data.user)
-    },
 
     logout() {
       this.token = null

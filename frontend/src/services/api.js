@@ -8,6 +8,7 @@ const api = axios.create({
   withCredentials: true, 
 })
 
+
 api.interceptors.request.use(config => {
   const authStore = useAuthStore()
   const access_token = authStore.access_token
@@ -22,6 +23,11 @@ api.interceptors.response.use(
   response => response,
   error => {
     if (error.response?.status === 401) {
+
+      const url = error.config?.url
+      if (url && url.includes('/login')) { 
+        return Promise.reject(error)
+      }
       const authStore = useAuthStore()
       authStore.logout() 
       window.location.href = '/login'
