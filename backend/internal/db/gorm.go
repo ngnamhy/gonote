@@ -3,12 +3,13 @@ package db
 import (
 	"fmt"
 	"gonote/internal/config"
+	"log"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
 )
 
-func New(dbCfg *config.DB) (*gorm.DB, error) {
+func New(dbCfg *config.DBConfig) (*gorm.DB, error) {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=UTC",
 		dbCfg.Host,

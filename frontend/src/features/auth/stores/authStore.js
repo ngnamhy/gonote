@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import api from '@/services/api'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -8,8 +7,9 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   getters: {
-    isLoggedIn: state => !!state.token,
-    isAdmin: state => state.user.role === 'admin', 
+    isLoggedIn: state => !!state.access_token,
+    isAuthenticated: state => !!state.access_token,
+    isAdmin: state => state.user?.role === 'admin', 
   },
 
   actions: {
@@ -31,25 +31,31 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async login(credentials) {
-      const response = await api.post('/auth/login', credentials)
-      const { access_token, user } = response.data
-      this.setAccessToken(access_token)
-      this.setUser(user)
-    },
-
-
-    logout() {
-      this.token = null
+    clearAuth() {
+      this.access_token = null
       this.user = null
       localStorage.removeItem('access_token')
+      localStorage.removeItem('auth_user')
+    },
+
+    logout() {
+      this.clearAuth()
     },
 
     loadFromStorage() {
       const token = localStorage.getItem('access_token')
+      const user = localStorage.getItem('auth_user')
 
       if (token) {
         this.access_token = token
+      }
+      
+      if (user) {
+        try {
+          this.user = JSON.parse(user)
+        } catch (e) {
+          console.error('Failed to parse user data:', e)
+        }
       }
     }
   },

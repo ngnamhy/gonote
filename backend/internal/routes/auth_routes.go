@@ -21,5 +21,6 @@ func (h *AuthRoutes) Register(router *gin.RouterGroup) {
 	{
 		auth.POST("login", h.handler.Login)
 		auth.POST("logout", h.handler.Logout)
+		auth.POST("register", h.handler.Register)
 	}
 }

@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"gonote/pkg/auth"
-	mylog "gonote/pkg/log"
 	"net/http"
 	"strings"
 
@@ -20,7 +19,6 @@ func InitAuthMiddleware(jwtServiceInjected *auth.JWTService) {
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
-		mylog.AppLogger.Info().Msg(c.GetHeader("Authorization"))
 		if authHeader == "" || strings.HasPrefix(authHeader, "Bearer ") == false {
 			c.AbortWithStatusJSON(
 				http.StatusUnauthorized,

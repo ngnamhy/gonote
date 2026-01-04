@@ -25,15 +25,15 @@ func (us *UserService) GetAllUser() ([]model.User, error) {
 	return users, err
 }
 
-func (us *UserService) GetByID(id uuid.UUID) (model.User, error) {
+func (us *UserService) GetByID(id *uuid.UUID) (model.User, error) {
 	return us.userRepo.GetByID(id)
 }
 
-func (us *UserService) GetByUsername(username string) (*model.User, error) {
+func (us *UserService) GetByUsername(username *string) (*model.User, error) {
 	return us.userRepo.GetByUsername(username)
 }
 
-func (us *UserService) Create(params dto.CreateUserParams) (*model.User, error) {
+func (us *UserService) Create(params *dto.CreateUserParams) (*model.User, error) {
 	id := uuid.New()
 	createdAt := time.Now()
 
@@ -56,7 +56,7 @@ func (us *UserService) Create(params dto.CreateUserParams) (*model.User, error) 
 	return user, us.userRepo.Create(user)
 }
 
-func (us *UserService) Update(id uuid.UUID, params dto.UpdateUserParams) (*model.User, error) {
+func (us *UserService) Update(id *uuid.UUID, params *dto.UpdateUserParams) (*model.User, error) {
 	user, err := us.userRepo.GetByID(id)
 	if err != nil {
 		return nil, err

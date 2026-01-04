@@ -21,4 +21,5 @@ type User struct {
 	IsDisabled bool      `json:"is_disabled" gorm:"not null"`
 	CreatedAt  time.Time `json:"created_at" gorm:"autoCreateTime"`
 	Role       Role      `json:"role" gorm:"size:20;default:user;not null,check:role in ('user','admin')"`
+	AvatarURL  string    `json:"avatar_url" gorm:"size:255"`
 }

@@ -25,7 +25,7 @@ func (r *UserRepository) GetAllUser() ([]model.User, error) {
 	return users, err
 }
 
-func (r *UserRepository) GetByID(id uuid.UUID) (model.User, error) {
+func (r *UserRepository) GetByID(id *uuid.UUID) (model.User, error) {
 	var user model.User
 	err := r.db.
 		Where("id = ?", id).
@@ -39,10 +39,22 @@ func (r *UserRepository) GetByID(id uuid.UUID) (model.User, error) {
 	return user, nil
 }
 
-func (r *UserRepository) GetByUsername(username string) (*model.User, error) {
+func (r *UserRepository) GetByUsername(username *string) (*model.User, error) {
 	var user model.User
 	err := r.db.
 		Where("username = ?", username).
+		First(&user).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *UserRepository) GetByEmail(email *string) (*model.User, error) {
+	var user model.User
+	err := r.db.
+		Where("email = ?", email).
 		First(&user).
 		Error
 	if err != nil {

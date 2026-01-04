@@ -16,7 +16,8 @@ func NewAuthModule(ctx *AppContext) *AuthModule {
 	userRepo := repository.NewUserRepository(ctx.DB)
 	jwtService := auth.NewJWTService(ctx.redisCache)
 	authService := service.NewAuthService(userRepo, jwtService, ctx.redisCache)
-	authHandler := handler.NewAuthHandler(authService)
+	userService := service.NewUserService(userRepo)
+	authHandler := handler.NewAuthHandler(authService, userService)
 	authRoutes := routes.NewAuthRoutes(authHandler)
 	return &AuthModule{authRoutes: authRoutes}
 }

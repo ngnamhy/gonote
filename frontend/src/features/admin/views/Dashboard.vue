@@ -66,7 +66,7 @@ const recentActivities = ref([
 </script>
 
 <template>
-  <div class="min-h-screen p-6" style="background-color: var(--color-bg-primary)">
+  <div>
     <!-- Header -->
     <div class="mb-8">
       <h1 class="text-4xl font-bold text-white mb-2">Dashboard</h1>

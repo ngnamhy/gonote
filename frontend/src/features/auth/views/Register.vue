@@ -3,35 +3,36 @@ import { ref } from 'vue'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
-import { useRouter } from 'vue-router'
+import { useAuth } from '../composables/useAuth'
+import { useValidation } from '@/shared/composables/useValidation'
 
-const router = useRouter()
-const loading = ref(false)
+const { register, loading, errors } = useAuth()
+const { validateRegisterForm } = useValidation()
+
 const form = ref({
   username: '',
   email: '',
   password: '',
   confirm_password: ''
 })
-const errors = ref({})
 
-function handleSubmit() {
-  // Xử lý đăng ký ở đây (gọi API, validate, etc.)
-  loading.value = true
-  setTimeout(() => {
-    loading.value = false
-    router.push('/login')
-  }, 2000)
+async function handleSubmit() {
+  const validationErrors = validateRegisterForm(form.value)
+  if (Object.keys(validationErrors).length > 0) {
+    errors.value = validationErrors
+    return
+  }
+
+  await register(form.value)
 }
 </script>
 
 <style scoped>
 .gradient-panel {
   background: linear-gradient(135deg, #54442B 0%, #A9714B 50%, #E8985E 100%);
-  box-shadow: 0 20px 60px rgba(84, 68, 43, 0.6);
+  /* box-shadow: 0 20px 60px rgba(84, 68, 43, 0.6); */
 }
 
-/* Fix password toggle icon position */
 :deep(.p-password) {
   width: 100%;
 }
@@ -48,12 +49,12 @@ function handleSubmit() {
 
 <template>
   <div class="min-h-screen flex flex-row-reverse p-8 gap-8" style="background-color: #141204">
-    <!-- Phần phải: Gradient background (đảo ngược so với login) -->
+    <!-- Phần phải: Gradient background -->
     <div class="hidden lg:flex lg:w-5/12 flex-col justify-between gradient-panel text-white p-12 rounded-[2rem]">
-      <div class="flex items-center gap-3">
+      <router-link to="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity w-fit">
         <i class="pi pi-users text-4xl"></i>
         <span class="text-2xl font-bold">gono.</span>
-      </div>
+      </router-link>
 
       <div class="max-w-md">
         <p class="text-sm mb-2 opacity-90">Join our community</p>
@@ -61,12 +62,14 @@ function handleSubmit() {
           Start your journey to better productivity today
         </h1>
       </div>
+      <div></div>
 
-      <div class="flex gap-2 text-sm opacity-75">
+      <!-- <div class="flex gap-2 text-sm opacity-75">
         <span>✓ Free to start</span>
         <span>•</span>
         <span>✓ No credit card</span>
       </div>
+    -->
     </div>
 
     <!-- Phần trái: Form đăng ký -->
@@ -78,6 +81,11 @@ function handleSubmit() {
           <p class="text-base" style="color: #A9714B">
             Create your account and unlock your productivity potential.
           </p>
+        </div>
+
+        <!-- General error message -->
+        <div v-if="errors.general" class="mb-4 p-3 bg-red-500/10 border border-red-500 rounded-lg">
+          <p class="text-red-500 text-sm">{{ errors.general }}</p>
         </div>
 
         <form @submit.prevent="handleSubmit">

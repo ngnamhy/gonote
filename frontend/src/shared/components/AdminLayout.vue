@@ -5,24 +5,16 @@
       class="w-64 flex flex-col hidden md:flex"
       style="background-color: var(--color-bg-secondary)"
     >
-      <!-- User Profile Section -->
+      <!-- Logo Section -->
       <div class="p-6 pb-4">
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
           <div 
-            class="flex items-center justify-center w-12 h-12 rounded-full text-2xl"
+            class="flex items-center justify-center w-10 h-10 rounded-xl text-xl"
             style="background: linear-gradient(135deg, var(--color-accent), var(--color-cinnamon))"
           >
-            <i class="pi pi-user text-white"></i>
+            <i class="pi pi-shield text-white"></i>
           </div>
-          <div class="flex flex-col">
-            <span class="font-bold text-lg text-white">{{ user?.username || "Admin" }}</span>
-            <span 
-              class="text-sm font-medium px-2 py-0.5 rounded-full inline-block"
-              style="background-color: var(--color-accent-muted); color: var(--color-accent)"
-            >
-              {{ user?.role || "Administrator" }}
-            </span>
-          </div>
+          <span class="text-2xl font-bold text-white">Admin</span>
         </div>
         <!-- Soft divider -->
         <div class="mt-4 h-px" style="background: linear-gradient(to right, transparent, var(--color-border-default), transparent); opacity: 0.3"></div>
@@ -34,20 +26,20 @@
           v-for="item in menuItems" 
           :key="item.to"
           :to="item.to"
-          v-slot="{ isActive }"
+          v-slot="{ isExactActive }"
         >
           <div 
             class="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all group"
-            :class="isActive ? 'active-menu-item' : 'menu-item'"
+            :class="isExactActive ? 'active-menu-item' : 'menu-item'"
           >
             <i 
               :class="item.icon" 
               class="text-xl transition-colors"
-              :style="isActive ? 'color: var(--color-accent)' : 'color: var(--color-text-muted)'"
+              :style="isExactActive ? 'color: var(--color-accent)' : 'color: var(--color-text-muted)'"
             ></i>
             <span 
               class="font-semibold transition-colors"
-              :style="isActive ? 'color: var(--color-text-primary)' : 'color: var(--color-text-tertiary)'"
+              :style="isExactActive ? 'color: var(--color-text-primary)' : 'color: var(--color-text-tertiary)'"
             >
               {{ item.label }}
             </span>
@@ -55,10 +47,26 @@
         </router-link>
       </nav>
 
-      <!-- Footer: Logout -->
+      <!-- Footer: User Profile & Logout -->
       <div class="p-4">
         <!-- Soft divider -->
         <div class="mb-4 h-px" style="background: linear-gradient(to right, transparent, var(--color-border-default), transparent); opacity: 0.3"></div>
+        
+        <!-- User Profile -->
+        <div class="flex items-center gap-3 mb-3 px-4 py-2">
+          <div 
+            class="flex items-center justify-center w-10 h-10 rounded-full text-lg"
+            style="background: linear-gradient(135deg, var(--color-accent), var(--color-cinnamon))"
+          >
+            <i class="pi pi-user text-white"></i>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-bold text-white">{{ user?.username || "Admin" }}</span>
+            <span class="text-xs" style="color: var(--color-text-muted)">{{ user?.role || "Administrator" }}</span>
+          </div>
+        </div>
+        
+        <!-- Logout Button -->
         <div 
           @click="logout"
           class="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all hover:bg-opacity-80"
@@ -73,9 +81,8 @@
     <!-- Main Content Area -->
     <div class="flex-1 flex flex-col overflow-hidden">
       <!-- Top Bar (optional - có thể thêm breadcrumb, search, notifications) -->
-      <header 
+      <!-- <header 
         class="px-6 py-4"
-        style="background-color: var(--color-bg-secondary)"
       >
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
@@ -90,14 +97,16 @@
             <i class="pi pi-bell" style="color: var(--color-accent)"></i>
           </button>
         </div>
-        </div>
+        </div> -->
         <!-- Soft divider -->
-        <div class="mt-4 h-px" style="background: linear-gradient(to right, transparent, var(--color-border-default), transparent); opacity: 0.3"></div>
-      </header>
+        <!-- <div class="mt-4 h-px" style="background: linear-gradient(to right, transparent, var(--color-border-default), transparent); opacity: 0.3"></div>
+      </header> -->
 
       <!-- Main Content -->
-      <main class="flex-1 overflow-y-auto p-6">
-        <router-view />
+      <main class="flex-1 overflow-hidden">
+        <div class="h-full overflow-y-auto p-6" style="background-color: var(--color-bg-secondary)">
+          <router-view />
+        </div>
       </main>
     </div>
   </div>
@@ -106,7 +115,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/features/auth/stores/authStore'
 
 const router = useRouter()
 const authStore = useAuthStore()

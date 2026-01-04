@@ -83,12 +83,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 15,
+        "h": 8,
         "w": 12,
         "x": 0,
         "y": 0
       },
-      "id": 2,
+      "id": 4,
       "options": {
         "legend": {
           "calcs": [],
@@ -107,12 +107,13 @@
         {
           "direction": "backward",
           "editorMode": "code",
-          "expr": "sum by (status) (count_over_time({filename=\"/app/logs/http.log\"} | json |  __error__=\"\" [$__interval]))",
+          "expr": "sum by (status) (\n  count_over_time({filename=\"/app/logs/http.log\"} | json [1m])\n)",
+          "legendFormat": "{{status}}",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "New panel",
+      "title": "HTTP Count Over Time",
       "type": "timeseries"
     },
     {

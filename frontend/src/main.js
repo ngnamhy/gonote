@@ -4,7 +4,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from '@/router'
 import { createPinia } from 'pinia'
-import { useAuthStore } from './stores/auth'
+import { useAuthStore } from '@/features/auth/stores/authStore'
 import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 import 'primeicons/primeicons.css'
