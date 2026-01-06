@@ -8,8 +8,10 @@ const users = ref([])
 const showCreateForm = ref(false)
 const editingUser = ref(null)
 const disablingUser = ref(null)
-const form = ref({ email: '', username: '', password: '', confirm_password: '' })
+const form = ref({ email: '', username: '', password: '', confirm_password: '', avatar: '' })
 const error = ref('')
+const uploadingAvatar = ref(false)
+const avatarPreview = ref('')
 
 const currentUserId = computed(() => authStore.user?.id)
 
@@ -18,12 +20,52 @@ async function loadUsers() {
   users.value = res.data
 }
 
+async function handleAvatarUpload(event) {
+  const file = event.target.files[0]
+  if (!file) return
+  
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    error.value = 'Please select an image file'
+    return
+  }
+  
+  // Validate file size (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    error.value = 'Image size must be less than 5MB'
+    return
+  }
+  
+  try {
+    uploadingAvatar.value = true
+    error.value = ''
+    
+    const formData = new FormData()
+    formData.append('image', file)
+    
+    const response = await api.post('/upload/avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    
+    form.value.avatar = response.data.url
+    avatarPreview.value = response.data.url
+  } catch (err) {
+    error.value = 'Failed to upload image'
+    console.error('Upload error:', err)
+  } finally {
+    uploadingAvatar.value = false
+  }
+}
+
 async function saveUser() {
   try { 
     if (editingUser.value) {
       await api.put(`/users/${editingUser.value.id}`, {
         email: form.value.email,
-        username: form.value.username
+        username: form.value.username,
+        avatar: form.value.avatar
       })
     } else {
       await api.post('/users', form.value)
@@ -65,13 +107,15 @@ function cancelDisable() {
 
 function editUser(user) {
   editingUser.value = user
-  form.value = { email: user.email, username: user.username, password: '', confirm_password: '' }
+  form.value = { email: user.email, username: user.username, password: '', confirm_password: '', avatar: user.avatar || '' }
+  avatarPreview.value = user.avatar || ''
 }
 
 function closeForm() {
   showCreateForm.value = false
   editingUser.value = null
-  form.value = { email: '', username: '', password: '', confirm_password: '' }
+  form.value = { email: '', username: '', password: '', confirm_password: '', avatar: '' }
+  avatarPreview.value = ''
   error.value = ''
 }
 
@@ -108,6 +152,7 @@ onMounted(loadUsers)
           <thead>
             <tr style="background-color: var(--color-bg-tertiary)">
               <th class="px-6 py-4 text-left text-sm font-bold text-white">ID</th>
+              <th class="px-6 py-4 text-left text-sm font-bold text-white">Avatar</th>
               <th class="px-6 py-4 text-left text-sm font-bold text-white">Email</th>
               <th class="px-6 py-4 text-left text-sm font-bold text-white">Username</th>
               <th class="px-6 py-4 text-left text-sm font-bold text-white">Role</th>
@@ -124,6 +169,14 @@ onMounted(loadUsers)
               :style="{ 'background-color': 'transparent' }"
             >
               <td class="px-6 py-4 text-white">{{ user.id }}</td>
+              <td class="px-6 py-4">
+                <div class="w-10 h-10 rounded-full overflow-hidden" style="background: linear-gradient(135deg, var(--color-accent), var(--color-cinnamon))">
+                  <img v-if="user.avatar" :src="user.avatar" alt="Avatar" class="w-full h-full object-cover" />
+                  <div v-else class="w-full h-full flex items-center justify-center">
+                    <i class="pi pi-user text-white"></i>
+                  </div>
+                </div>
+              </td>
               <td class="px-6 py-4" style="color: var(--color-text-secondary)">{{ user.email }}</td>
               <td class="px-6 py-4 text-white font-semibold">{{ user.username }}</td>
               <td class="px-6 py-4">
@@ -190,6 +243,36 @@ onMounted(loadUsers)
         </h3>
         
         <div class="space-y-4">
+          <!-- Avatar Upload -->
+          <div>
+            <label class="block text-sm font-semibold mb-2 text-white">Avatar</label>
+            <div class="flex items-center gap-4">
+              <div class="w-20 h-20 rounded-full overflow-hidden" style="background: linear-gradient(135deg, var(--color-accent), var(--color-cinnamon))">
+                <img v-if="avatarPreview" :src="avatarPreview" alt="Avatar preview" class="w-full h-full object-cover" />
+                <div v-else class="w-full h-full flex items-center justify-center">
+                  <i class="pi pi-user text-white text-2xl"></i>
+                </div>
+              </div>
+              <div class="flex-1">
+                <label 
+                  class="px-4 py-2 rounded-lg font-semibold text-sm cursor-pointer transition-all hover:scale-105 inline-flex items-center gap-2"
+                  style="background-color: var(--color-bg-tertiary); color: var(--color-text-tertiary)"
+                >
+                  <i class="pi pi-upload"></i>
+                  {{ uploadingAvatar ? 'Uploading...' : 'Choose Image' }}
+                  <input 
+                    type="file" 
+                    @change="handleAvatarUpload" 
+                    accept="image/*" 
+                    class="hidden"
+                    :disabled="uploadingAvatar"
+                  />
+                </label>
+                <p class="text-xs mt-2" style="color: var(--color-text-muted)">Max size: 5MB. JPG, PNG, GIF</p>
+              </div>
+            </div>
+          </div>
+          
           <div>
             <label class="block text-sm font-semibold mb-2 text-white">Email</label>
             <input 

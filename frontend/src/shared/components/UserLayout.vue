@@ -96,7 +96,11 @@
         
         <!-- If logged in -->
         <div v-if="isAuthenticated">
-          <div class="flex items-center gap-3 mb-3 px-4 py-2">
+          <div 
+            @click="$router.push('/profile'); sidebarOpen = false"
+            class="flex items-center gap-3 mb-3 px-4 py-2 rounded-lg cursor-pointer transition-all hover:bg-opacity-80"
+            style="background-color: var(--color-bg-tertiary)"
+          >
             <div 
               class="flex items-center justify-center w-10 h-10 rounded-full text-lg"
               style="background: linear-gradient(135deg, var(--color-accent), var(--color-cinnamon))"
@@ -104,7 +108,7 @@
               <i class="pi pi-user text-white"></i>
             </div>
             <div class="flex flex-col">
-              <span class="font-bold text-white">{{ user?.username }}</span>
+              <span class="font-bold text-sm text-white">{{ user?.name }}</span>
               <span class="text-xs" style="color: var(--color-text-muted)">{{ user?.email }}</span>
             </div>
           </div>
@@ -190,14 +194,16 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/features/auth/stores/authStore'
+import { useAuthStore } from '@/features/auth/model/authStore'
+import { useUserStore } from '@/entities/user/model/userStore'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const userStore = useUserStore()
 const sidebarOpen = ref(false)
 
 const isAuthenticated = computed(() => authStore.isAuthenticated)
-const user = computed(() => authStore.user)
+const user = computed(() => userStore.user)
 
 const myTeams = ref([
   { id: 1, name: 'Engineering', icon: 'pi-code', color: '#3B82F6', members: 24 },
@@ -227,6 +233,11 @@ const menuItems = ref([
     label: 'Notifications',
     icon: 'pi pi-bell',
     to: '/notifications'
+  },
+  {
+    label: 'Profile',
+    icon: 'pi pi-user',
+    to: '/profile'
   },
 ])
 </script>
@@ -269,5 +280,10 @@ const menuItems = ref([
 
 .active-menu-item:hover {
   background: linear-gradient(90deg, var(--color-accent-muted), transparent);
+}
+
+/* Force avatar to be round */
+.rounded-full {
+  border-radius: 9999px !important;
 }
 </style>

@@ -5,14 +5,17 @@ export const authService = {
     const response = await api.post('/auth/register', {
       username: data.username,
       email: data.email,
+      name: data.name,
       password: data.password,
-      confirm_password: data.confirm_password
+      confirmPassword: data.confirmPassword
     })
     return response.data
   },
 
   async login(credentials) {
     const response = await api.post('/auth/login', credentials)
+    console.log("RESPONSE")
+    console.log(response)
     return response.data
   },
 

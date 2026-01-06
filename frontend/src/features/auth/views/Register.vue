@@ -10,15 +10,17 @@ const { register, loading, errors } = useAuth()
 const { validateRegisterForm } = useValidation()
 
 const form = ref({
+  name: '',
   username: '',
   email: '',
   password: '',
-  confirm_password: ''
+  confirmPassword: ''
 })
 
 async function handleSubmit() {
   const validationErrors = validateRegisterForm(form.value)
   if (Object.keys(validationErrors).length > 0) {
+    console.log(errors)
     errors.value = validationErrors
     return
   }
@@ -64,12 +66,7 @@ async function handleSubmit() {
       </div>
       <div></div>
 
-      <!-- <div class="flex gap-2 text-sm opacity-75">
-        <span>✓ Free to start</span>
-        <span>•</span>
-        <span>✓ No credit card</span>
-      </div>
-    -->
+
     </div>
 
     <!-- Phần trái: Form đăng ký -->
@@ -89,6 +86,18 @@ async function handleSubmit() {
         </div>
 
         <form @submit.prevent="handleSubmit">
+          <!-- Name -->
+          <div class="mb-5">
+            <label for="name" class="block font-semibold mb-2 text-sm" style="color: #E8985E">Name</label>
+            <InputText 
+              id="name" 
+              v-model="form.name" 
+              class="w-full" 
+              placeholder="Your full name"
+              :invalid="!!errors.name" 
+            />
+            <small v-if="errors.name" class="text-red-500 text-sm mt-1">{{ errors.name }}</small>
+          </div>
           <!-- 2 cột cho Username và Email -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
             <div>
@@ -134,17 +143,17 @@ async function handleSubmit() {
 
           <!-- Confirm Password -->
           <div class="mb-6">
-            <label for="confirm_password" class="block font-semibold mb-2 text-sm" style="color: #E8985E">Confirm Password</label>
+            <label for="confirmPassword" class="block font-semibold mb-2 text-sm" style="color: #E8985E">Confirm Password</label>
             <Password 
-              id="confirm_password" 
-              v-model="form.confirm_password" 
+              id="confirmPassword" 
+              v-model="form.confirmPassword" 
               class="w-full" 
               toggleMask 
               :feedback="false"
               placeholder="Confirm your password" 
-              :invalid="!!errors.confirm_password" 
+              :invalid="!!errors.confirmPassword" 
             />
-            <small v-if="errors.confirm_password" class="text-red-500 text-sm mt-1">{{ errors.confirm_password }}</small>
+            <small v-if="errors.confirmPassword" class="text-red-500 text-sm mt-1">{{ errors.confirmPassword }}</small>
           </div>
 
           <!-- Terms & Conditions -->

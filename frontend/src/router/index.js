@@ -12,9 +12,16 @@ import AdminPosts from '@/features/admin/views/posts/Posts.vue'
 
 // Shared views
 import Home from '@/shared/views/Home.vue'
-import Feed from '@/shared/views/Feed.vue'
 import Teams from '@/shared/views/Teams.vue'
 import Notifications from '@/shared/views/Notifications.vue'
+
+// Feed views
+import Feed from '@/features/feed/views/Feed.vue'
+import Submit from '@/features/feed/views/Submit.vue'
+import PostDetail from '@/features/feed/views/PostDetail.vue'
+
+// Profile views
+import Profile from '@/features/profile/views/Profile.vue'
 
 const routes = [
   // Landing page (no layout)
@@ -41,8 +48,11 @@ const routes = [
     component: UserLayout,         
     children: [
       { path: 'feed', name: 'feed', component: Feed },
+      { path: 'submit', name: 'submit', component: Submit },
+      { path: 'posts/:id', name: 'post-detail', component: PostDetail },
       { path: 'teams', name: 'teams', component: Teams },
       { path: 'notifications', name: 'notifications', component: Notifications },
+      { path: 'profile', name: 'profile', component: Profile },
     ]
   },
 

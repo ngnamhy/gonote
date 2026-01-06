@@ -21,7 +21,6 @@ async function handleSubmit() {
     return
   }
 
-  // Call login from composable
   await login({
     email: form.value.email,
     password: form.value.password
@@ -38,6 +37,19 @@ function socialLogin(provider) {
 .gradient-panel {
   background: linear-gradient(135deg, #141204 0%, #262A10 40%, #54442B 100%);
   box-shadow: 0 20px 60px rgba(20, 18, 4, 0.6);
+}
+
+:deep(.p-password) {
+  width: 100%;
+}
+
+:deep(.p-password .p-password-input) {
+  width: 100%;
+  padding-right: 3rem;
+}
+
+:deep(.p-password .p-icon-field-right > .p-input-icon) {
+  right: 1rem;
 }
 </style>
 

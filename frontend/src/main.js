@@ -1,27 +1,33 @@
-import './assets/main.css'
-
+import './app/styles/assets/main.css'
 import { createApp } from 'vue'
-import App from './App.vue'
-import router from '@/router'
 import { createPinia } from 'pinia'
-import { useAuthStore } from '@/features/auth/stores/authStore'
-import PrimeVue from 'primevue/config';
-import Aura from '@primeuix/themes/aura';
+import PrimeVue from 'primevue/config'
+import Aura from '@primeuix/themes/aura'
 import 'primeicons/primeicons.css'
+
+import App from './app/App.vue'
+import router from './app/router'
+import { setupApiInterceptors } from './app/config/api'
 
 const app = createApp(App)
 
-app.use(createPinia())  
-app.use(router)   
+// Setup Pinia
+const pinia = createPinia()
+app.use(pinia)
 
+// Setup API interceptors after pinia is ready
+setupApiInterceptors()
+
+// Setup Router
+app.use(router)
+
+// Setup PrimeVue
 app.use(PrimeVue, {
-    theme: {
-        preset: Aura
-    }
-});     
+  theme: {
+    preset: Aura
+  }
+})
 
-
-const authStore = useAuthStore()
-authStore.loadFromStorage()
+// Mount app
 app.mount('#app')
 

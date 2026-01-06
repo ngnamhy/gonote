@@ -146,7 +146,7 @@ const unreadCount = ref(notifications.value.filter(n => !n.read).length)
           <div class="flex-1 min-w-0">
             <div class="flex items-start justify-between gap-3 mb-2">
               <div>
-                <p class="text-white">
+                <p class="text-white space-x-1">
                   <span class="font-semibold">{{ notification.user }}</span>
                   <span style="color: var(--color-text-muted)"> {{ notification.action }}</span>
                 </p>

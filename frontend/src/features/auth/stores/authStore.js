@@ -3,39 +3,47 @@ import { defineStore } from 'pinia'
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
-    access_token: null,
+    accessToken: null,
   }),
 
   getters: {
-    isLoggedIn: state => !!state.access_token,
-    isAuthenticated: state => !!state.access_token,
+    isLoggedIn: state => !!state.accessToken,
+    isAuthenticated: state => !!state.accessToken,
     isAdmin: state => state.user?.role === 'admin', 
   },
 
   actions: {
-    setAccessToken(access_token) {
-      this.access_token = access_token
-      if (access_token) {
-        localStorage.setItem('access_token', access_token)
+    setAccessToken(accessToken) {
+      this.accessToken = accessToken
+      if (accessToken) {
+        localStorage.setItem('accessToken', accessToken)
       } else {
-        localStorage.removeItem('access_token')
+        localStorage.removeItem('accessToken')
       }
     },
 
     setUser(user) {
       this.user = user
+      console.log(JSON.stringify(user))
       if (user) {
-        localStorage.setItem('auth_user', JSON.stringify(user))
+        localStorage.setItem('authUser', JSON.stringify(user))
       } else {
-        localStorage.removeItem('auth_user')
+        localStorage.removeItem('authUser')
+      }
+    },
+
+    updateUser(updatedData) {
+      if (this.user) {
+        this.user = { ...this.user, ...updatedData }
+        localStorage.setItem('authUser', JSON.stringify(this.user))
       }
     },
 
     clearAuth() {
-      this.access_token = null
+      this.accessToken = null
       this.user = null
-      localStorage.removeItem('access_token')
-      localStorage.removeItem('auth_user')
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('authUser')
     },
 
     logout() {
@@ -43,11 +51,11 @@ export const useAuthStore = defineStore('auth', {
     },
 
     loadFromStorage() {
-      const token = localStorage.getItem('access_token')
-      const user = localStorage.getItem('auth_user')
+      const token = localStorage.getItem('accessToken')
+      const user = localStorage.getItem('authUser')
 
       if (token) {
-        this.access_token = token
+        this.accessToken = token
       }
       
       if (user) {

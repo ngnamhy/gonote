@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Brand Colors - Warm Dark Palette */
+    --color-pitch: #141204;
+    --color-khaki: #262A10;
+    --color-oak: #54442B;
+    --color-cinnamon: #A9714B;
+    --color-almond: #E8985E;
+    
+    /* Semantic Colors */
+    --color-bg-primary: #141204;
+    --color-bg-secondary: #1a1810;
+    --color-bg-tertiary: #262A10;
+    
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #E8985E;
+    --color-text-muted: #A9714B;
+    
+    --color-border: #54442B;
+    --color-border-hover: #A9714B;
+    
+    --color-accent: #E8985E;
+    --color-accent-hover: #f3ad73;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-almond hover:bg-almond-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors;
+  }
+  
+  .card-dark {
+    @apply bg-khaki border border-oak rounded-2xl p-6;
+  }
+  
+  .input-dark {
+    @apply bg-pitch border border-oak text-white placeholder:text-cinnamon;
+  }
+}
